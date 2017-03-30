@@ -13,14 +13,7 @@ public class Assets {
     public static Texture house_01;
 
     public static void load(){
-        Pixmap house_01_pix = new Pixmap(64, 64, Pixmap.Format.RGB888);
-        house_01_pix.setColor(Color.BLUE);
-        house_01_pix.drawLine(0,0,0,63);
-        house_01_pix.drawLine(0,63,63,63);
-        house_01_pix.drawLine(63,63,63,0);
-        house_01_pix.drawLine(63,0,0,0);
-        house_01 = new Texture(house_01_pix);
-        house_01_pix.dispose();
+        house_01 = loadTexture("images/Animals-Dog-House-icon.png");
     }
 
     private static Texture loadTexture(String filePath){

@@ -27,7 +27,7 @@ public class RenderingSystem extends IteratingSystem{
 
     static final float FRUSTUM_WIDTH = 480;
     static final float FRUSTUM_HEIGHT = 800;
-    public static final float PIXELS_TO_METRES = 1.0f / 16.0f;
+    public static final float PIXELS_TO_METRES = 1.0f;
 
     private TiledMap tiledMap = null;
     private TmxMapLoader tmxMapLoader;
@@ -97,7 +97,7 @@ public class RenderingSystem extends IteratingSystem{
             float originY = height * 0.5f;
 
             batch.draw(tex.region,
-                    t.pos.x - originX, t.pos.y - originY,
+                    t.pos.x, t.pos.y,
                     originX, originY,
                     width, height,
                     t.scale.x * PIXELS_TO_METRES, t.scale.y * PIXELS_TO_METRES,

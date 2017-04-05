@@ -29,8 +29,7 @@ public class RenderingSystem extends IteratingSystem{
     static final float FRUSTUM_HEIGHT = 800;
     public static final float PIXELS_TO_METRES = 1.0f;
 
-    private TiledMap tiledMap = null;
-    private TmxMapLoader tmxMapLoader;
+    private TiledMap tiledMap;
     private TiledMapRenderer tiledMapRenderer;
 
     private SpriteBatch batch;
@@ -62,7 +61,10 @@ public class RenderingSystem extends IteratingSystem{
         cam = new OrthographicCamera(FRUSTUM_WIDTH, FRUSTUM_HEIGHT);
         cam.position.set(FRUSTUM_WIDTH / 2, FRUSTUM_HEIGHT / 2, 0);
 
-        tmxMapLoader = new TmxMapLoader();
+
+        //FIXME:  The Rendering system should not control which tiled2d map is loaded
+        tiledMap = new TmxMapLoader().load("tiledmap/testLevel.tmx");
+        tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
     }
 
 

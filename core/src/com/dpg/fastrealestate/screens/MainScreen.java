@@ -85,10 +85,10 @@ public class MainScreen extends ScreenAdapter {
         if(delta > 0.1f)
             delta = 0.1f;
 
-        OrthographicCamera cam = engine.getSystem(RenderingSystem.class).getCamera();
-        cam.update();
-        tiledMapRenderer.setView(cam);
-        tiledMapRenderer.render();
+//        OrthographicCamera cam = engine.getSystem(RenderingSystem.class).getCamera();
+//        cam.update();
+//        tiledMapRenderer.setView(cam);
+//        tiledMapRenderer.render();
 
         engine.update(delta);
 

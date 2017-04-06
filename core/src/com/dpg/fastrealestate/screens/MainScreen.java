@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.dpg.fastrealestate.FastRealEstate;
 import com.dpg.fastrealestate.World;
 import com.dpg.fastrealestate.components.WorldMapComponent;
@@ -15,6 +16,7 @@ import com.dpg.fastrealestate.systems.CameraSystem;
 import com.dpg.fastrealestate.systems.PropertySystem;
 import com.dpg.fastrealestate.systems.RenderingSystem;
 import com.dpg.fastrealestate.systems.StateSystem;
+import com.uwsoft.editor.renderer.resources.ResourceManager;
 
 /**
  * Created by Fred on 3/27/2017.
@@ -27,6 +29,9 @@ public class MainScreen extends ScreenAdapter {
 
     private World world;
 
+    private GameStage gameStage;
+    private ResourceManager rm;
+
     public MainScreen(FastRealEstate game) {
         this.game = game;
 
@@ -35,13 +40,16 @@ public class MainScreen extends ScreenAdapter {
 
         engine.addSystem(new CameraSystem());
         engine.addSystem(new StateSystem());
-        engine.addSystem(new RenderingSystem(game.batch));
-        engine.addSystem(new PropertySystem());
+        engine.addSystem(new RenderingSystem(game.batch, game));
+        engine.addSystem(new PropertySystem(engine.getSystem(RenderingSystem.class).getCamera()));
 
         world.create();
 
         tiledMapRenderer = new OrthogonalTiledMapRenderer(world.tiledMap);
 
+        gameStage = new GameStage(game.sl,game.viewport);
+        rm = new ResourceManager();
+        rm.initAllResources();
         resumeSystems();
     }
 
@@ -49,6 +57,12 @@ public class MainScreen extends ScreenAdapter {
     public void render(float delta) {
         super.render(delta);
         update(delta);
+        drawUI(delta);
+    }
+
+    public void drawUI(float delta){
+        gameStage.act();
+        gameStage.draw();
     }
 
     @Override
@@ -84,11 +98,6 @@ public class MainScreen extends ScreenAdapter {
     public void update(float delta){
         if(delta > 0.1f)
             delta = 0.1f;
-
-//        OrthographicCamera cam = engine.getSystem(RenderingSystem.class).getCamera();
-//        cam.update();
-//        tiledMapRenderer.setView(cam);
-//        tiledMapRenderer.render();
 
         engine.update(delta);
 

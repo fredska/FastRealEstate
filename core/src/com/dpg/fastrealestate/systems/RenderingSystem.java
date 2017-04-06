@@ -14,11 +14,18 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
+import com.badlogic.gdx.utils.viewport.Viewport;
+import com.dpg.fastrealestate.FastRealEstate;
 import com.dpg.fastrealestate.components.TextureComponent;
 import com.dpg.fastrealestate.components.TransformComponent;
 import com.dpg.fastrealestate.components.WorldMapComponent;
+import com.dpg.fastrealestate.screens.GameStage;
+import com.uwsoft.editor.renderer.SceneLoader;
+import com.uwsoft.editor.renderer.data.LabelVO;
+import com.uwsoft.editor.renderer.data.MainItemVO;
 
 import java.util.Comparator;
+import java.util.List;
 
 /**
  * Created by Fred on 3/27/2017.
@@ -28,6 +35,10 @@ public class RenderingSystem extends IteratingSystem{
     static final float FRUSTUM_WIDTH = 480;
     static final float FRUSTUM_HEIGHT = 800;
     public static final float PIXELS_TO_METRES = 1.0f;
+
+    public SceneLoader sl;
+    public Viewport viewport;
+    public GameStage gameStage;
 
     private TiledMap tiledMap;
     private TiledMapRenderer tiledMapRenderer;
@@ -40,8 +51,12 @@ public class RenderingSystem extends IteratingSystem{
     ComponentMapper<TextureComponent> texCm;
     ComponentMapper<TransformComponent> transCm;
 
-    public RenderingSystem(SpriteBatch batch){
+    FastRealEstate game;
+
+    public RenderingSystem(SpriteBatch batch, FastRealEstate game){
         super(Family.all(TransformComponent.class, TextureComponent.class).get());
+
+        this.game = game;
 
         texCm = ComponentMapper.getFor(TextureComponent.class);
         transCm = ComponentMapper.getFor(TransformComponent.class);
@@ -65,6 +80,11 @@ public class RenderingSystem extends IteratingSystem{
         //FIXME:  The Rendering system should not control which tiled2d map is loaded
         tiledMap = new TmxMapLoader().load("tiledmap/testLevel.tmx");
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
+
+        this.sl = game.sl;
+        this.viewport = game.viewport;
+
+        gameStage = new GameStage(this.sl, this.viewport);
     }
 
 
@@ -110,6 +130,22 @@ public class RenderingSystem extends IteratingSystem{
 
         batch.end();
         renderQueue.clear();
+
+        updateGUI(deltaTime);
+    }
+
+    private void updateGUI(float deltaTime){
+
+        List<MainItemVO> compositeItems = sl.getSceneVO().composite.getAllItems();
+        if(compositeItems.get(0) instanceof LabelVO){
+            LabelVO label = (LabelVO)compositeItems.get(0);
+            label.text = "Score: " + game.score;
+            game.score++;
+        }
+
+        sl.getEngine().update(deltaTime);
+        gameStage.act();
+        gameStage.draw();
     }
 
     @Override

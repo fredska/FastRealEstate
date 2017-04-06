@@ -37,13 +37,15 @@ public class World {
     }
 
     public void create(){
-        createCamera();
         createWorldMap();
+        createCamera();
 
         MapLayer propertyLayer = tiledMap.getLayers().get("PropertyLayout");
+        int propertyId = 0;
         for(MapObject mapObject : propertyLayer.getObjects()){
             if(mapObject instanceof RectangleMapObject){
-                createHouse(((RectangleMapObject)mapObject).getRectangle());
+                createHouse(propertyId, ((RectangleMapObject)mapObject).getRectangle());
+                propertyId++;
             }
 //            createHouse(new Vector2((Float)mapObject.getProperties().get("x"), (Float)mapObject.getProperties().get("y")));
         }
@@ -55,8 +57,8 @@ public class World {
         CameraComponent cc = new CameraComponent();
         TransformComponent tc = new TransformComponent();
         cc.camera = engine.getSystem(RenderingSystem.class).getCamera();
-
-        tc.pos.set(Vector3.Zero);
+        cc.camera.position.set(new Vector3(720,600,0));
+        tc.pos.set(new Vector3(0,0,0));
 
         entity.add(cc);
         entity.add(tc);
@@ -75,7 +77,7 @@ public class World {
 //        createHouse(new Vector2((Float) props.get("x"), (Float)props.get("y")));
     }
 
-    public void createHouse(Rectangle rect){
+    public void createHouse(int propId, Rectangle rect){
         Entity entity = new Entity();
 
         BoundsComponent boundsComponent = new BoundsComponent();
@@ -86,23 +88,18 @@ public class World {
 
         sc.set(0);
 
+        pc.propId = propId;
         pc.minValue = rand.nextInt() * 1000;
         pc.maxValue = rand.nextInt() * 20000;
         pc.lifeSpan = rand.nextFloat() * 4f;
 
+
         transC.pos.set(rect.x, rect.y, 1);
         boundsComponent.bounds.set(rect);
+        System.out.println(rect);
 
-        switch(MathUtils.random(2)){
-            case 0:
-                texC.region = new TextureRegion(Assets.house_01);
-                break;
-            case 1:
-                texC.region = new TextureRegion(Assets.house_02);
-                break;
-            default:
-                texC.region = new TextureRegion(Assets.house_01);
-        }
+        texC.region = new TextureRegion(Assets.house_01);
+
 
         entity.add(transC);
         entity.add(texC);

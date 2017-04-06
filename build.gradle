@@ -18,7 +18,7 @@ allprojects {
     version = '1.0'
     ext {
         appName = "FastRealEstate"
-        gdxVersion = '1.9.5'
+        gdxVersion = '1.9.4'
         roboVMVersion = '2.3.0'
         box2DLightsVersion = '1.4'
         ashleyVersion = '1.7.0'
@@ -70,6 +70,7 @@ project(":core") {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
         compile "com.badlogicgames.ashley:ashley:$ashleyVersion"
+        compile "com.underwaterapps.overlap2druntime:overlap2d-runtime-libgdx:0.1.2-SNAPSHOT"
     }
 }
 

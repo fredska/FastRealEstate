@@ -30,7 +30,10 @@ public class FastRealEstate extends Game {
 		gameState = GameState.LOADING;
 
 		viewport = new FitViewport(480,800);
+
 		sl = new SceneLoader();
+		sl.loadScene("MainScene");
+		gameStage = new GameStage(sl, viewport);
 
 		//TODO: Do loading things, like Assets.load() here
 		Assets.load();

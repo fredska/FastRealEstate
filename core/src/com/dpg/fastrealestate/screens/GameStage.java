@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.dpg.fastrealestate.components.LabelComponent;
 import com.uwsoft.editor.renderer.SceneLoader;
 import com.uwsoft.editor.renderer.resources.ResourceManager;
 
@@ -21,13 +22,15 @@ public class GameStage extends Stage {
 
     public GameStage(SceneLoader sl, Viewport viewport){
         super(new StretchViewport(480,800));
-        Gdx.input.setInputProcessor(this);
+//        Gdx.input.setInputProcessor(this);
         this.sl = sl;
         this.viewPort = viewport;
 
         assetManager = new ResourceManager();
         assetManager.initAllResources();
 
-        sl.loadScene("MainScene");
+        sl.addComponentsByTagName("score_label", LabelComponent.class);
+
+        sl.getSceneVO().composite.sLabels.get(0).text = "SOMETHING AWFUL";
     }
 }

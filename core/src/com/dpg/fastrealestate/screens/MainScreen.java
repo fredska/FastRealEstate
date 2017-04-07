@@ -12,10 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.dpg.fastrealestate.FastRealEstate;
 import com.dpg.fastrealestate.World;
 import com.dpg.fastrealestate.components.WorldMapComponent;
-import com.dpg.fastrealestate.systems.CameraSystem;
-import com.dpg.fastrealestate.systems.PropertySystem;
-import com.dpg.fastrealestate.systems.RenderingSystem;
-import com.dpg.fastrealestate.systems.StateSystem;
+import com.dpg.fastrealestate.systems.*;
 import com.uwsoft.editor.renderer.resources.ResourceManager;
 
 /**
@@ -29,7 +26,6 @@ public class MainScreen extends ScreenAdapter {
 
     private World world;
 
-    private GameStage gameStage;
     private ResourceManager rm;
 
     public MainScreen(FastRealEstate game) {
@@ -42,12 +38,13 @@ public class MainScreen extends ScreenAdapter {
         engine.addSystem(new StateSystem());
         engine.addSystem(new RenderingSystem(game.batch, game));
         engine.addSystem(new PropertySystem(engine.getSystem(RenderingSystem.class).getCamera()));
+        engine.addSystem(new UISystem(game.batch));
 
         world.create();
 
         tiledMapRenderer = new OrthogonalTiledMapRenderer(world.tiledMap);
 
-        gameStage = new GameStage(game.sl,game.viewport);
+//        gameStage = new GameStage(game.sl,game.viewport);
         rm = new ResourceManager();
         rm.initAllResources();
         resumeSystems();
@@ -57,12 +54,12 @@ public class MainScreen extends ScreenAdapter {
     public void render(float delta) {
         super.render(delta);
         update(delta);
-        drawUI(delta);
+//        drawUI(delta);
     }
 
     public void drawUI(float delta){
-        gameStage.act();
-        gameStage.draw();
+        game.gameStage.act();
+        game.gameStage.draw();
     }
 
     @Override

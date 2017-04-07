@@ -38,7 +38,6 @@ public class RenderingSystem extends IteratingSystem{
 
     public SceneLoader sl;
     public Viewport viewport;
-    public GameStage gameStage;
 
     private TiledMap tiledMap;
     private TiledMapRenderer tiledMapRenderer;
@@ -83,8 +82,6 @@ public class RenderingSystem extends IteratingSystem{
 
         this.sl = game.sl;
         this.viewport = game.viewport;
-
-        gameStage = new GameStage(this.sl, this.viewport);
     }
 
 
@@ -124,8 +121,6 @@ public class RenderingSystem extends IteratingSystem{
                     width, height,
                     t.scale.x * PIXELS_TO_METRES, t.scale.y * PIXELS_TO_METRES,
                     MathUtils.radiansToDegrees * t.rotation);
-
-
         }
 
         batch.end();
@@ -135,17 +130,14 @@ public class RenderingSystem extends IteratingSystem{
     }
 
     private void updateGUI(float deltaTime){
-
-        List<MainItemVO> compositeItems = sl.getSceneVO().composite.getAllItems();
-        if(compositeItems.get(0) instanceof LabelVO){
-            LabelVO label = (LabelVO)compositeItems.get(0);
-            label.text = "Score: " + game.score;
+        for(LabelVO labelVO : game.sl.getSceneVO().composite.sLabels){
+            labelVO.text = "Score: " + game.score;
             game.score++;
         }
 
-        sl.getEngine().update(deltaTime);
-        gameStage.act();
-        gameStage.draw();
+        game.sl.getEngine().update(deltaTime);
+        game.gameStage.act();
+        game.gameStage.draw();
     }
 
     @Override

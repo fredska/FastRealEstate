@@ -134,12 +134,8 @@ public class RenderingSystem extends IteratingSystem{
             if((pc = entity.getComponent(PropertyComponent.class)) != null){
                 StateComponent sc = entity.getComponent(StateComponent.class);
                 font.setColor(Color.BLUE);
+                font.draw(batch, pc.getCurrentValue(sc) + "", t.pos.x, t.pos.y);
 
-                if(sc.time >= pc.lifeSpan / 2f){
-                    font.draw(batch, "" + MathUtils.lerp(pc.maxValue,pc.minValue, 1 - (1 / 1)), t.pos.x, t.pos.y);
-                } else {
-                    font.draw(batch, "" + MathUtils.lerp(pc.minValue,pc.maxValue, (float)(1f / ((pc.lifeSpan / 2) - sc.time))), t.pos.x, t.pos.y);
-                }
             }
         }
 

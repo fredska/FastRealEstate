@@ -53,9 +53,7 @@ public class PropertySystem extends IteratingSystem {
         BoundsComponent bc = bcm.get(entity);
 
         if(sc.time >= pc.lifeSpan) {
-            sc.time = 0f;
-//            tc.pos.x = MathUtils.random(100, 1500);
-//            tc.pos.y = MathUtils.random(100, 1500);
+            getEngine().removeEntity(entity);
         }
 
         if(Gdx.input.justTouched()){

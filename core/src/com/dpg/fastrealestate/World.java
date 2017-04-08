@@ -42,6 +42,7 @@ public class World {
 
         MapLayer propertyLayer = tiledMap.getLayers().get("PropertyLayout");
         int propertyId = 0;
+
         for(MapObject mapObject : propertyLayer.getObjects()){
             if(mapObject instanceof RectangleMapObject){
                 createHouse(propertyId, ((RectangleMapObject)mapObject).getRectangle());
@@ -91,7 +92,7 @@ public class World {
         pc.propId = propId;
         pc.minValue = rand.nextFloat() * 1000 + 5000;
         pc.maxValue = rand.nextFloat() * 4000 + 20000;
-        pc.lifeSpan = rand.nextFloat() * 4f + 10;
+        pc.lifeSpan = rand.nextFloat() * 4f + 4;
 
 
         transC.pos.set(rect.x, rect.y, 1);

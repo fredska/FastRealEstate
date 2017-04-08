@@ -5,6 +5,7 @@ package com.dpg.fastrealestate.components;
  */
 
 import com.badlogic.ashley.core.Component;
+import com.badlogic.gdx.math.MathUtils;
 
 /**
  * Base component for a 'Property'
@@ -21,6 +22,9 @@ public class PropertyComponent implements Component {
     public boolean isOwned;
 
     public float getCurrentValue(StateComponent sc){
-        return 250000f;
+        if(sc.time >= (lifeSpan / 2f)){
+            return MathUtils.lerp(minValue,maxValue,1 - ((sc.time - (lifeSpan / 2f)) / (lifeSpan / 2f)));
+        } else
+            return MathUtils.lerp(minValue,maxValue,sc.time / (lifeSpan / 2f));
     }
 }

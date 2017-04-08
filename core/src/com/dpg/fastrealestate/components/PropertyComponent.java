@@ -19,4 +19,8 @@ public class PropertyComponent implements Component {
     public float lifeSpan;
 
     public boolean isOwned;
+
+    public float getCurrentValue(StateComponent sc){
+        return 250000f;
+    }
 }

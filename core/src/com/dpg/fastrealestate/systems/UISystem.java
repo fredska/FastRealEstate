@@ -7,34 +7,35 @@ import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.dpg.fastrealestate.FastRealEstate;
-import com.dpg.fastrealestate.components.LabelComponent;
-import com.dpg.fastrealestate.components.TransformComponent;
-import com.uwsoft.editor.renderer.data.LabelVO;
+import com.uwsoft.editor.renderer.components.MainItemComponent;
+import com.uwsoft.editor.renderer.components.label.LabelComponent;
 
-import java.awt.*;
 
 /**
  * Created by Fred on 4/6/2017.
  */
 public class UISystem extends IteratingSystem{
     BitmapFont font = null;
-
+    FastRealEstate game;
     ComponentMapper<LabelComponent> lcm;
 
-    public UISystem(SpriteBatch batch){
+    public UISystem(FastRealEstate game){
         super(Family.all(LabelComponent.class).get());
         font = new BitmapFont();
-        this.batch = batch;
+        this.game = game;
         lcm = ComponentMapper.getFor(LabelComponent.class);
     }
     SpriteBatch batch;
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
         LabelComponent lc = lcm.get(entity);
-        TransformComponent tc = (ComponentMapper.getFor(TransformComponent.class)).get(entity);
-        batch.begin();
-        font.draw(batch, lc.text, tc.pos.x, tc.pos.y);
-batch.flush();
-batch.end();
+        if(entity.getComponent(MainItemComponent.class).tags.contains("score_label")) {
+            lc.text.setLength(0);
+            lc.text.append("Score: " + game.score);
+        }
+        if(entity.getComponent(MainItemComponent.class).tags.contains("funds_label")) {
+            lc.text.setLength(0);
+            lc.text.append("Funds: " + game.funds);
+        }
     }
 }

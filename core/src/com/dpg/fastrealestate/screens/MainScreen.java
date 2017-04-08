@@ -36,9 +36,11 @@ public class MainScreen extends ScreenAdapter {
 
         engine.addSystem(new CameraSystem());
         engine.addSystem(new StateSystem());
-        engine.addSystem(new RenderingSystem(game.batch, game));
-        engine.addSystem(new PropertySystem(engine.getSystem(RenderingSystem.class).getCamera()));
-        engine.addSystem(new UISystem(game.batch));
+        engine.addSystem(new RenderingSystem(game));
+        engine.addSystem(new PropertySystem(engine.getSystem(RenderingSystem.class).getCamera(), game));
+
+        //Add custom Systems to the overlap2D ashley engine
+        game.sl.getEngine().addSystem(new UISystem(game));
 
         world.create();
 
@@ -54,12 +56,6 @@ public class MainScreen extends ScreenAdapter {
     public void render(float delta) {
         super.render(delta);
         update(delta);
-//        drawUI(delta);
-    }
-
-    public void drawUI(float delta){
-        game.gameStage.act();
-        game.gameStage.draw();
     }
 
     @Override

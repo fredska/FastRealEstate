@@ -5,7 +5,9 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
@@ -16,9 +18,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.dpg.fastrealestate.FastRealEstate;
-import com.dpg.fastrealestate.components.TextureComponent;
-import com.dpg.fastrealestate.components.TransformComponent;
-import com.dpg.fastrealestate.components.WorldMapComponent;
+import com.dpg.fastrealestate.components.*;
 import com.dpg.fastrealestate.screens.GameStage;
 import com.uwsoft.editor.renderer.SceneLoader;
 import com.uwsoft.editor.renderer.data.LabelVO;
@@ -47,12 +47,16 @@ public class RenderingSystem extends IteratingSystem{
     private Comparator<Entity> comparator;
     private OrthographicCamera cam;
 
+    private BitmapFont font;
+
     ComponentMapper<TextureComponent> texCm;
     ComponentMapper<TransformComponent> transCm;
 
     FastRealEstate game;
 
-    public RenderingSystem(SpriteBatch batch, FastRealEstate game){
+    PropertyComponent pc;
+
+    public RenderingSystem(FastRealEstate game){
         super(Family.all(TransformComponent.class, TextureComponent.class).get());
 
         this.game = game;
@@ -70,7 +74,7 @@ public class RenderingSystem extends IteratingSystem{
             }
         };
 
-        this.batch = batch;
+        this.batch = game.batch;
 
         cam = new OrthographicCamera(FRUSTUM_WIDTH, FRUSTUM_HEIGHT);
         cam.position.set(FRUSTUM_WIDTH / 2, FRUSTUM_HEIGHT / 2, 0);
@@ -82,6 +86,10 @@ public class RenderingSystem extends IteratingSystem{
 
         this.sl = game.sl;
         this.viewport = game.viewport;
+
+        font = new BitmapFont();
+
+        pc = null;
     }
 
 
@@ -121,6 +129,18 @@ public class RenderingSystem extends IteratingSystem{
                     width, height,
                     t.scale.x * PIXELS_TO_METRES, t.scale.y * PIXELS_TO_METRES,
                     MathUtils.radiansToDegrees * t.rotation);
+
+            //Draw price above entities with PropertyComponent
+            if((pc = entity.getComponent(PropertyComponent.class)) != null){
+                StateComponent sc = entity.getComponent(StateComponent.class);
+                font.setColor(Color.BLUE);
+
+                if(sc.time >= pc.lifeSpan / 2f){
+                    font.draw(batch, "" + MathUtils.lerp(pc.maxValue,pc.minValue, 1 - (1 / 1)), t.pos.x, t.pos.y);
+                } else {
+                    font.draw(batch, "" + MathUtils.lerp(pc.minValue,pc.maxValue, (float)(1f / ((pc.lifeSpan / 2) - sc.time))), t.pos.x, t.pos.y);
+                }
+            }
         }
 
         batch.end();
@@ -130,11 +150,6 @@ public class RenderingSystem extends IteratingSystem{
     }
 
     private void updateGUI(float deltaTime){
-        for(LabelVO labelVO : game.sl.getSceneVO().composite.sLabels){
-            labelVO.text = "Score: " + game.score;
-            game.score++;
-        }
-
         game.sl.getEngine().update(deltaTime);
         game.gameStage.act();
         game.gameStage.draw();

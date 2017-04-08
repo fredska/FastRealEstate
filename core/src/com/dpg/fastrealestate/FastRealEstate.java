@@ -24,6 +24,9 @@ public class FastRealEstate extends Game {
 
 	public int score = 0;
 
+	//Starting 'currency'
+	public float funds = 50000;
+
 	@Override
 	public void create () {
 		batch = new SpriteBatch();

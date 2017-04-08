@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.dpg.fastrealestate.FastRealEstate;
 import com.dpg.fastrealestate.assets.Assets;
 import com.dpg.fastrealestate.components.*;
 
@@ -26,14 +27,18 @@ public class PropertySystem extends IteratingSystem {
     ComponentMapper<BoundsComponent> bcm;
 
     private Camera camera;
+    private FastRealEstate game;
+
 
     private boolean isLeftTouched;
 
-    public PropertySystem(Camera camera){
+    public PropertySystem(Camera camera, FastRealEstate game){
         super(Family.all(TransformComponent.class, PropertyComponent.class, StateComponent.class, BoundsComponent.class).get());
 
         isLeftTouched = false;
         this.camera = camera;
+        this.game = game;
+
         pcm = ComponentMapper.getFor(PropertyComponent.class);
         scm = ComponentMapper.getFor(StateComponent.class);
         tcm = ComponentMapper.getFor(TransformComponent.class);
@@ -58,11 +63,14 @@ public class PropertySystem extends IteratingSystem {
                     new Vector3(Gdx.input.getX(),Gdx.input.getY(), 0));
             if(bc.bounds.contains(new Vector2(unprojectedCoord.x, unprojectedCoord.y))){
                 if(!pc.isOwned){
-                    pc.isOwned = true;
-                    System.out.println("Now own house id: " + pc.propId);
-
-                    entity.getComponent(TextureComponent.class).region = Assets.house_02;
+                    if(game.funds >= pc.getCurrentValue(sc)){
+                        game.funds -= pc.getCurrentValue(sc);
+                        pc.isOwned = true;
+                        System.out.println("Now own house id: " + pc.propId);
+                        entity.getComponent(TextureComponent.class).region = Assets.house_02;
+                    }
                 } else {
+                    game.funds += pc.getCurrentValue(sc);
                     pc.isOwned = false;
                     entity.getComponent(TextureComponent.class).region = Assets.house_01;
                 }

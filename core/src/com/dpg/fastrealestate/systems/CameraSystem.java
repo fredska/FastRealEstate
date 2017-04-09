@@ -37,9 +37,8 @@ public class CameraSystem extends IteratingSystem {
         }
 
         if(Gdx.input.isButtonPressed(Input.Buttons.LEFT)){
-            cc.camera.position.x -= Gdx.input.getDeltaX() * cc.dragSpeed;
-            cc.camera.position.y += Gdx.input.getDeltaY() * cc.dragSpeed;
-//            System.out.println("Camera pos: " + cc.camera.position);
+//            cc.camera.position.x -= Gdx.input.getDeltaX() * cc.dragSpeed;
+//            cc.camera.position.y += Gdx.input.getDeltaY() * cc.dragSpeed;
         }
 
     }

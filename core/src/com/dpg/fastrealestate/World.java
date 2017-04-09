@@ -1,5 +1,7 @@
 package com.dpg.fastrealestate;
 
+import com.badlogic.ashley.core.ComponentMapper;
+import com.badlogic.ashley.core.ComponentType;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
@@ -29,7 +31,8 @@ public class World {
     private Engine engine;
 
     public TiledMap tiledMap;
-
+    private MapLayer propertyLayer = null;
+    private boolean[] isPropertyOccupied;
 
     public World(Engine engine){
         this.engine = engine;
@@ -40,16 +43,23 @@ public class World {
         createWorldMap();
         createCamera();
 
-        MapLayer propertyLayer = tiledMap.getLayers().get("PropertyLayout");
+        propertyLayer = tiledMap.getLayers().get("PropertyLayout");
         int propertyId = 0;
 
-        for(MapObject mapObject : propertyLayer.getObjects()){
-            if(mapObject instanceof RectangleMapObject){
-                createHouse(propertyId, ((RectangleMapObject)mapObject).getRectangle());
-                propertyId++;
-            }
-//            createHouse(new Vector2((Float)mapObject.getProperties().get("x"), (Float)mapObject.getProperties().get("y")));
+        isPropertyOccupied = new boolean[propertyLayer.getObjects().getCount()];
+
+        for(int c = 0; c < isPropertyOccupied.length / 2; c++){
+            createHouse();
         }
+    }
+
+    private int getEmptyPropertyLot(int range){
+        int propertyId = MathUtils.random(range-1);
+        while(isPropertyOccupied[propertyId]){
+            propertyId = MathUtils.random(range-1);
+        }
+
+        return propertyId;
     }
 
     public void createCamera(){
@@ -73,12 +83,19 @@ public class World {
     }
 
     public void createHouse(){
-        MapLayer propertyLayer = tiledMap.getLayers().get("PropertyLayout");
-        MapProperties props = propertyLayer.getObjects().get(0).getProperties();
-//        createHouse(new Vector2((Float) props.get("x"), (Float)props.get("y")));
+        int newPropertyId = getEmptyPropertyLot(isPropertyOccupied.length);
+        isPropertyOccupied[newPropertyId] = true;
+        MapObject mapObject = propertyLayer.getObjects().get(newPropertyId);
+        createHouse(newPropertyId, ((RectangleMapObject)mapObject).getRectangle());
     }
 
-    public void createHouse(int propId, Rectangle rect){
+    public void destroyHouse(Entity entity){
+        PropertyComponent pc = ComponentMapper.getFor(PropertyComponent.class).get(entity);
+        isPropertyOccupied[pc.propId] = false;
+        engine.removeEntity(entity);
+    }
+
+    private void createHouse(int propId, Rectangle rect){
         Entity entity = new Entity();
 
         BoundsComponent boundsComponent = new BoundsComponent();
@@ -92,7 +109,7 @@ public class World {
         pc.propId = propId;
         pc.minValue = rand.nextFloat() * 1000 + 5000;
         pc.maxValue = rand.nextFloat() * 4000 + 20000;
-        pc.lifeSpan = rand.nextFloat() * 4f + 4;
+        pc.lifeSpan = rand.nextFloat() * 5f + 10;
 
 
         transC.pos.set(rect.x, rect.y, 1);

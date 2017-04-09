@@ -37,7 +37,7 @@ public class MainScreen extends ScreenAdapter {
         engine.addSystem(new CameraSystem());
         engine.addSystem(new StateSystem());
         engine.addSystem(new RenderingSystem(game));
-        engine.addSystem(new PropertySystem(engine.getSystem(RenderingSystem.class).getCamera(), game));
+        engine.addSystem(new PropertySystem(engine.getSystem(RenderingSystem.class).getCamera(), game, world));
 
         //Add custom Systems to the overlap2D ashley engine
         game.sl.getEngine().addSystem(new UISystem(game));

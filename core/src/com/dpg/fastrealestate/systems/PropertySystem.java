@@ -13,6 +13,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.dpg.fastrealestate.FastRealEstate;
+import com.dpg.fastrealestate.World;
 import com.dpg.fastrealestate.assets.Assets;
 import com.dpg.fastrealestate.components.*;
 
@@ -28,16 +29,17 @@ public class PropertySystem extends IteratingSystem {
 
     private Camera camera;
     private FastRealEstate game;
-
+    private World world;
 
     private boolean isLeftTouched;
 
-    public PropertySystem(Camera camera, FastRealEstate game){
+    public PropertySystem(Camera camera, FastRealEstate game, World world){
         super(Family.all(TransformComponent.class, PropertyComponent.class, StateComponent.class, BoundsComponent.class).get());
 
         isLeftTouched = false;
         this.camera = camera;
         this.game = game;
+        this.world = world;
 
         pcm = ComponentMapper.getFor(PropertyComponent.class);
         scm = ComponentMapper.getFor(StateComponent.class);
@@ -53,7 +55,8 @@ public class PropertySystem extends IteratingSystem {
         BoundsComponent bc = bcm.get(entity);
 
         if(sc.time >= pc.lifeSpan) {
-            getEngine().removeEntity(entity);
+            world.destroyHouse(entity);
+            world.createHouse();
         }
 
         if(Gdx.input.justTouched()){
@@ -69,8 +72,8 @@ public class PropertySystem extends IteratingSystem {
                     }
                 } else {
                     game.funds += pc.getCurrentValue(sc);
-                    pc.isOwned = false;
-                    entity.getComponent(TextureComponent.class).region = Assets.house_01;
+                    world.destroyHouse(entity);
+                    world.createHouse();
                 }
             }
         }

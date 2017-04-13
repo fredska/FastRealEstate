@@ -1,10 +1,8 @@
 package com.dpg.fastrealestate.screens;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.utils.viewport.StretchViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
-import com.dpg.fastrealestate.components.LabelComponent;
+import com.dpg.fastrealestate.FastRealEstate;
+import com.dpg.fastrealestate.systems.UISystem;
 import com.uwsoft.editor.renderer.SceneLoader;
 import com.uwsoft.editor.renderer.resources.ResourceManager;
 
@@ -17,20 +15,26 @@ public class GameStage extends Stage {
     // provided by default when exporting from overlap
     private ResourceManager assetManager;
 
-    private Viewport viewPort;
-    private SceneLoader sl;
+    FastRealEstate game;
+    public SceneLoader sl;
 
-    public GameStage(SceneLoader sl, Viewport viewport){
-        super(new StretchViewport(480,800));
-//        Gdx.input.setInputProcessor(this);
-        this.sl = sl;
-        this.viewPort = viewport;
+    public GameStage(FastRealEstate game){
+        super(game.viewport);
+        this.game = game;
+        sl = new SceneLoader();
+        sl.loadScene("MainScene");
 
         assetManager = new ResourceManager();
         assetManager.initAllResources();
 
-        sl.addComponentsByTagName("score_label", LabelComponent.class);
-
-        sl.getSceneVO().composite.sLabels.get(0).text = "SOMETHING AWFUL";
+        sl.getEngine().addSystem(new UISystem(game));
     }
+
+    public void update(float delta){
+        sl.getEngine().update(delta);
+        this.act();
+        this.draw();
+    }
+
+
 }

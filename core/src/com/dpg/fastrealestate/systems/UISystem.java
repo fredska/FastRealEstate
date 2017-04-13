@@ -5,7 +5,6 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.dpg.fastrealestate.FastRealEstate;
 import com.uwsoft.editor.renderer.components.MainItemComponent;
 import com.uwsoft.editor.renderer.components.label.LabelComponent;
@@ -25,17 +24,17 @@ public class UISystem extends IteratingSystem{
         this.game = game;
         lcm = ComponentMapper.getFor(LabelComponent.class);
     }
-    SpriteBatch batch;
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
         LabelComponent lc = lcm.get(entity);
-        if(entity.getComponent(MainItemComponent.class).tags.contains("score_label")) {
+        if(entity.getComponent(MainItemComponent.class).tags.contains("funds")) {
             lc.text.setLength(0);
-            lc.text.append("Score: " + game.score);
+            lc.text.append(game.funds);
         }
-        if(entity.getComponent(MainItemComponent.class).tags.contains("funds_label")) {
+        if(entity.getComponent(MainItemComponent.class).tags.contains("timeleft")) {
+            game.timeLeft -= deltaTime;
             lc.text.setLength(0);
-            lc.text.append("Funds: " + game.funds);
+            lc.text.append(game.timeLeft);
         }
     }
 }

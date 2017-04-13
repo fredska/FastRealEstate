@@ -19,7 +19,7 @@ android {
     }
     defaultConfig {
         applicationId "com.dpg.fastrealestate"
-        minSdkVersion 8
+        minSdkVersion 23
         targetSdkVersion 23
     }
 }

@@ -2,16 +2,12 @@ package com.dpg.fastrealestate.screens;
 
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.EntitySystem;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
-import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.dpg.fastrealestate.FastRealEstate;
 import com.dpg.fastrealestate.World;
-import com.dpg.fastrealestate.components.WorldMapComponent;
+import com.dpg.fastrealestate.assets.GameState;
 import com.dpg.fastrealestate.systems.*;
 import com.uwsoft.editor.renderer.resources.ResourceManager;
 
@@ -28,6 +24,8 @@ public class MainScreen extends ScreenAdapter {
 
     private ResourceManager rm;
 
+    private GameStage uiStage;
+
     public MainScreen(FastRealEstate game) {
         this.game = game;
 
@@ -39,8 +37,8 @@ public class MainScreen extends ScreenAdapter {
         engine.addSystem(new RenderingSystem(game));
         engine.addSystem(new PropertySystem(engine.getSystem(RenderingSystem.class).getCamera(), game, world));
 
-        //Add custom Systems to the overlap2D ashley engine
-        game.sl.getEngine().addSystem(new UISystem(game));
+        //Create the UI stage
+        uiStage = new GameStage(game);
 
         world.create();
 
@@ -50,6 +48,8 @@ public class MainScreen extends ScreenAdapter {
         rm = new ResourceManager();
         rm.initAllResources();
         resumeSystems();
+
+        game.gameState = GameState.RUNNING;
     }
 
     @Override
@@ -76,11 +76,13 @@ public class MainScreen extends ScreenAdapter {
     @Override
     public void pause() {
         super.pause();
+        pauseSystems();
     }
 
     @Override
     public void resume() {
         super.resume();
+        resumeSystems();
     }
 
     @Override
@@ -93,6 +95,11 @@ public class MainScreen extends ScreenAdapter {
             delta = 0.1f;
 
         engine.update(delta);
+        uiStage.update(delta);
+
+        //End the game when the timer is up
+        if(game.timeLeft <= 0f)
+            game.gameState = GameState.LEVEL_END;
 
         switch(game.gameState){
             case READY:
@@ -102,6 +109,7 @@ public class MainScreen extends ScreenAdapter {
             case PAUSED:
                 break;
             case LEVEL_END:
+                levelEnd();
                 break;
             case OVER:
                 break;
@@ -119,5 +127,13 @@ public class MainScreen extends ScreenAdapter {
         for(EntitySystem es : engine.getSystems()){
             es.setProcessing(false);
         }
+    }
+
+    public void levelEnd(){
+        if(game.highScore < game.funds)
+            game.highScore = (int)game.funds;
+        game.getScreen().dispose();
+        game.initialize();
+        game.setScreen(new MenuScreen(game));
     }
 }

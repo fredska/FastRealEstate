@@ -4,7 +4,6 @@ import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -15,17 +14,15 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.dpg.fastrealestate.FastRealEstate;
-import com.dpg.fastrealestate.components.*;
-import com.dpg.fastrealestate.screens.GameStage;
+import com.dpg.fastrealestate.components.PropertyComponent;
+import com.dpg.fastrealestate.components.StateComponent;
+import com.dpg.fastrealestate.components.TextureComponent;
+import com.dpg.fastrealestate.components.TransformComponent;
 import com.uwsoft.editor.renderer.SceneLoader;
-import com.uwsoft.editor.renderer.data.LabelVO;
-import com.uwsoft.editor.renderer.data.MainItemVO;
 
 import java.util.Comparator;
-import java.util.List;
 
 /**
  * Created by Fred on 3/27/2017.
@@ -141,15 +138,8 @@ public class RenderingSystem extends IteratingSystem{
 
         batch.end();
         renderQueue.clear();
-
-        updateGUI(deltaTime);
     }
 
-    private void updateGUI(float deltaTime){
-        game.sl.getEngine().update(deltaTime);
-        game.gameStage.act();
-        game.gameStage.draw();
-    }
 
     @Override
     public void processEntity(Entity entity, float deltaTime) {

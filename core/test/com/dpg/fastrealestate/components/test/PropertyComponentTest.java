@@ -20,37 +20,25 @@ public class PropertyComponentTest {
 
         pc = new PropertyComponent();
         pc.lifeSpan = 1;
-        pc.minValue = 0;
-        pc.maxValue = 1000;
+        pc.minValue = 1000;
+        pc.maxValue = 10000;
     }
 
     @Test
     public void getCurrentValue_begin(){
         sc.time = 0;
-        assertEquals(0, pc.getCurrentValue(sc), 0.0001f);
+        assertEquals(pc.minValue, pc.getCurrentValue(sc), 0.0001f);
     }
 
     @Test
     public void getCurrentValue_halflife(){
         sc.time = 0.5f;
-        assertEquals(1000, pc.getCurrentValue(sc), 0.0001f);
+        assertEquals(pc.maxValue, pc.getCurrentValue(sc), 0.0001f);
     }
 
     @Test
     public void getCurrentValue_endOfLife(){
         sc.time = 1f;
-        assertEquals(0, pc.getCurrentValue(sc), 0.0001f);
-    }
-
-    @Test
-    public void getCurrentValue_quarterLife(){
-        sc.time = 0.25f;
-        assertEquals(500, pc.getCurrentValue(sc), 0.0001f);
-    }
-
-    @Test
-    public void getCurrentValue_threequarterLife(){
-        sc.time = 0.75f;
-        assertEquals(500, pc.getCurrentValue(sc), 0.0001f);
+        assertEquals(pc.minValue, pc.getCurrentValue(sc), 0.0001f);
     }
 }

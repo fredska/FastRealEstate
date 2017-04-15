@@ -81,7 +81,7 @@ public class FastRealEstate extends Game {
 	public void initialize(){
 		funds = 50000;
 		score = 0;
-		timeLeft = 5;
+		timeLeft = 60;
 		gameState = GameState.READY;
 	}
 }

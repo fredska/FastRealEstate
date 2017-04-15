@@ -29,12 +29,12 @@ public class UISystem extends IteratingSystem{
         LabelComponent lc = lcm.get(entity);
         if(entity.getComponent(MainItemComponent.class).tags.contains("funds")) {
             lc.text.setLength(0);
-            lc.text.append(game.funds);
+            lc.text.append((int)game.funds);
         }
         if(entity.getComponent(MainItemComponent.class).tags.contains("timeleft")) {
             game.timeLeft -= deltaTime;
             lc.text.setLength(0);
-            lc.text.append(game.timeLeft);
+            lc.text.append((int)game.timeLeft);
         }
     }
 }

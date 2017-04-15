@@ -131,7 +131,7 @@ public class RenderingSystem extends IteratingSystem{
             if((pc = entity.getComponent(PropertyComponent.class)) != null){
                 StateComponent sc = entity.getComponent(StateComponent.class);
                 font.setColor(Color.BLUE);
-                font.draw(batch, pc.getCurrentValue(sc) + "", t.pos.x, t.pos.y);
+                font.draw(batch, (int)pc.getCurrentValue(sc) + "", t.pos.x, t.pos.y);
 
             }
         }
